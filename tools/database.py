@@ -11,7 +11,7 @@ db = sqlite3.connect(db_file)
 cursor = db.cursor()
 
 def create_pokemon_table():
-    cursor.execute("""
+    cursor.execute("""--sql
         CREATE TABLE IF NOT EXISTS pokemon (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL
@@ -31,9 +31,16 @@ if __name__ == "__main__":
     create_pokemon_table()
     pokemon_dir = os.path.join(data_dir, "pokemon")
 
-    for file_name in os.listdir(pokemon_dir):
+    print(f"Found {len(os.listdir(pokemon_dir))} Pokemon files")
+    tenthIndex = int(len(os.listdir(pokemon_dir))/10)
+    for (idx, file_name) in enumerate(os.listdir(pokemon_dir)):
         file_path = os.path.join(pokemon_dir, file_name)
         with open(file_path, 'r') as file:
             data = json.load(file)
             pokemon = Pokemon(number=data['id'], name=data['name'])
             insert_pokemon(pokemon)
+            if idx % tenthIndex == 0:
+                print(f"Inserted {idx} Pokemon")
+            
+            
+    
