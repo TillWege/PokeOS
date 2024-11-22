@@ -40,6 +40,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(imgui)
 
+FetchContent_Declare(
+        SqliteCpp
+        GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
+        GIT_TAG "master"  # You can change this to the latest tag or branch as needed
+        GIT_PROGRESS TRUE
+        GIT_SHALLOW 1
+)
+
+FetchContent_MakeAvailable(SqliteCpp)
+
 file(GLOB PROJECT_SOURCES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.h"
         "${imgui_SOURCE_DIR}/*.cpp" "${imgui_SOURCE_DIR}/*.h"
@@ -58,7 +68,14 @@ set(PROJECT_INCLUDE
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib SQLiteCpp sqlite3)
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+    target_link_libraries(${PROJECT_NAME} PRIVATE pthread dl)
+endif ()
 
 # Setting ASSETS_PATH
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/") # Set the asset path macro to the absolute path on the dev machine

@@ -1,6 +1,12 @@
 ﻿cmake-build-debug
 .idea
+.vscode
 build
 .cache
-
+data-sources
 tools/__pycache__
+tools/*.zip
+assets/cries
+assets/sprites
+assets/data
+assets/pokemon.db
